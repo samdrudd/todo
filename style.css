@@ -1,0 +1,146 @@
+body
+{
+  font-family:Arial,sans-serif;
+}
+
+div
+{
+  margin: 5px;
+}
+
+div#add_task_container
+{
+  float: left;
+  width: 24%;
+  margin:0;
+}
+
+#add_task_container input, textarea
+{
+
+  width: 100%;
+}
+
+textarea
+{
+  resize: none;
+  font-family:Arial,sans-serif;
+}
+
+input
+{
+  font-family:Arial,sans-serif;
+}
+
+.button
+{
+  background-color:#EEE;
+  border-radius:2px;
+  border:1px solid #EEE;
+  padding:3px;
+}
+
+.button:hover
+{
+  background-color:#EEE;
+  box-shadow:2px 2px #CCC;
+  cursor:hand;
+}
+
+div#list_task_container
+{
+  width: 75%;
+  float: right;
+}
+
+#list_task_container
+{
+  font-family: Helvetica;
+  font-size: 12pt;
+}
+
+#list_task_container pre
+{
+  white-space: pre-wrap;
+  margin:0;
+  padding:0;
+}
+
+#list_task_container h3
+{
+  padding:0;
+  margin:0;
+  padding-bottom:10px;
+}
+
+#list_task_container .deletebutton
+{
+  color:white;
+  background-color:#DD0000;
+  float:right;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1px solid #DD0000;
+  transition: all 0.2s linear;
+}
+
+#list_task_container .deletebutton:hover
+{
+  color:white;
+  background-color:#DD6666;
+  float:right;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1px solid #DD6666;
+  cursor:hand;
+}
+
+#list_task_container .donebutton
+{
+  color:white;
+  background-color:#00DD00;
+  float:right;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1px solid #00DD00;
+  transition: all 0.2s linear;
+  font-size:8pt;
+  padding:0;
+  margin-right:3px;
+}
+
+#list_task_container .donebutton:hover
+{
+  color:white;
+  background-color:#66DD66;
+  float:right;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:1px solid #66DD66;
+  cursor:hand;
+}
+
+.task
+{
+  background-color:#EEE;
+  box-shadow: 1px 1px #CCC;
+  margin:0;
+  padding:10px;
+  margin:5px;
+}
+
+.completed
+{
+  background-color:#EEFFEE;
+  border:1px solid green;
+}
+
+#list_task_container .completed h3
+{
+  padding:0;
+  margin:0;
+}
