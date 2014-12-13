@@ -1,0 +1,212 @@
+<html>
+<head>
+<title>To Do</title>
+<link rel="stylesheet" href="style.css" type="text/css">
+
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+<script>
+var data = new Array();
+
+// -------------------------------------------------
+// FUNCTION: init
+// Initialize stuff, read in localStorage and add
+// tasks to list
+// -------------------------------------------------
+function init()
+{
+  // Read in localStorage to data
+  data = JSON.parse(localStorage.getItem("todoData"));
+
+  if (data == null)
+  {
+    data = new Array();
+  }
+
+  // Populate list with data
+  updateList();
+}
+
+// -------------------------------------------------
+// FUNCTION: createTask
+// ACCEPTS: string title, string desc
+// Creates JSON representation of task, with date-
+// based ID attached and returns it
+// -------------------------------------------------
+function createTask(title, desc)
+{
+  // Generate ID and return JSON object
+  id = new Date().getTime();
+  return {id: id, title: title, desc: desc}
+}
+
+// -------------------------------------------------
+// FUNCTION: addTask
+// ACCEPTS: Object task (returned from createTask)
+// Adds given task to data array and localStorage
+// Calls updateList() to add it to the list
+// -------------------------------------------------
+function addTask(task)
+{
+  // Add task to localStorage
+  data.push(task);
+  localStorage.setItem("todoData", JSON.stringify(data));
+
+  addTaskToList(task);
+  $("#" + task.id).hide();
+  $("#" + task.id).fadeIn(500);
+}
+
+// -------------------------------------------------
+// FUNCTION: clearTasks
+// Clears list as well as localStorage
+// -------------------------------------------------
+function clearTasks()
+{
+  // Prompt for confirmation
+  if (confirm("Click OK to clear all tasks."))
+  {
+    // Clear list and localStorage
+    localStorage.clear();
+    data = new Array();
+    $("#list_task_container").html("");
+  }
+}
+
+// -------------------------------------------------
+// FUNCTION: deleteTask
+// ACCEPTS: id of task to delete
+// Removes task with associated id from data
+// Pushes updated data to localStorage
+// -------------------------------------------------
+function deleteTask(taskid)
+{
+  // Loop through all tasks in data
+  for (i = 0; i < data.length; i++)
+  {
+    // If we found the matching ID
+    if (data[i].id === taskid)
+    {
+      // Confirm and delete the task
+      if (confirm("Click OK to delete task:\n\n" + data[i].title))
+      {
+        // Remove the task from the data array
+        data.splice(i, 1);
+
+        // Push data to localStorage
+        localStorage.setItem("todoData", JSON.stringify(data));
+
+        // Remove corresponding div from list
+        $("#" + taskid).fadeOut(500);
+      }
+    }
+  }
+}
+
+function getTaskByID(taskid)
+{
+  for (var i = 0; i < data.length; i++)
+  {
+    if (data[i].id == taskid) return data[i];
+  }
+}
+
+function doneTask(taskid)
+{
+  var task = $("#" + taskid);
+  if (!task.hasClass("completed"))
+  {
+    $("#" + taskid + " pre").slideUp(500, function(){ task.addClass("completed"); });
+    $("#" + taskid + " .donebutton").attr("value", "Done.");
+  }
+  else
+  {
+    taskOBJ = getTaskByID(taskid);
+    task.removeClass("completed");
+    $("#" + taskid + " pre").slideDown(500);
+  }
+}
+
+function addTaskToList(task)
+{
+  console.log(task.title);
+  var delButton = "<input type='button' class='deletebutton' value='x' onClick='deleteTask(" + task.id + ");'></input>";
+  var doneButton = "<input type='button' class='donebutton' value='&#10003' onClick='doneTask(" + task.id + ");'></input>";
+  var add = "<div id=\"" + task.id + "\" class=\"task\">" + delButton + doneButton + "<h3>" + task.title + "</h3><pre>" + task.desc + "</pre></div>";
+  $("#list_task_container").html($("#list_task_container").html() + add);
+}
+
+function updateList()
+{
+  // Clear list
+  $("#list_task_container").html("");
+
+  // Repopulate with tasks from data
+  for (taskid in data)
+  {
+    addTaskToList(data[taskid]);
+  }
+}
+
+// DOCUMENT.READY
+$( document ).ready(function() {
+
+// Initalize list from localStorage
+init();
+
+// -----------------------------------------------
+// FUNCTION: ADD TASK
+// Adds a task to the list and to localStorage
+// -----------------------------------------------
+$( "#add-task" ).click(function() {
+  // Get task info from form
+  var title = $("#task-title").val();
+  var desc = $("#task-desc").val();
+
+  // If no title, don't add anything
+  if (title === "") return;
+
+  // Create task, add it to list and localStorage
+  var tasktoadd = createTask(title, desc);
+  addTask(tasktoadd);
+
+  // Clear form
+  $("#task-title").val("");
+  $("#task-desc").val("");
+}); // END FUNCTION: ADD TASK
+
+// Keep add task form with you as you scroll
+$(window).scroll(function() {
+  $("#add_task_container").animate({"marginTop": ($(window).scrollTop() + 5) + "px"}, 0);
+});
+
+}); // END DOCUMENT.READY
+
+</script>
+
+</head>
+
+<body>
+
+<div id="add_task_container">
+  <div>
+    <input id="task-title" type="text" placeholder="Title" size="30" />
+  </div>
+  <div>
+    <textarea id="task-desc" placeholder="Description" rows="5" cols="30"></textarea>
+  </div>
+  <div>
+    <input id="add-task" type="submit" class="button" value="+New Task" />
+  </div>
+  <div>
+    <input type="button" class="button" value="Clear Tasks" onClick="clearTasks()"></input>
+  </div>
+</div>
+
+<div id="list_task_container">
+
+</div>
+
+</body>
+</html>
