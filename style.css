@@ -73,53 +73,43 @@ div#list_task_container
   padding-bottom:10px;
 }
 
-#list_task_container .deletebutton
+#list_task_container .action
 {
   color:white;
-  background-color:#DD0000;
   float:right;
   width:20px;
   height:20px;
+  font-size:10px;
+  text-align:center;
+  vertical-align:middle;
   border-radius:50%;
-  border:1px solid #DD0000;
   transition: all 0.2s linear;
 }
 
-#list_task_container .deletebutton:hover
+#list_task_container .delete
 {
-  color:white;
+  background-color:#DD0000;
+  border:1px solid #DD0000;
+}
+
+#list_task_container .delete:hover
+{
   background-color:#DD6666;
-  float:right;
-  width:20px;
-  height:20px;
-  border-radius:50%;
   border:1px solid #DD6666;
   cursor:hand;
 }
 
-#list_task_container .donebutton
+#list_task_container .done
 {
-  color:white;
   background-color:#00DD00;
-  float:right;
-  width:20px;
-  height:20px;
-  border-radius:50%;
   border:1px solid #00DD00;
-  transition: all 0.2s linear;
-  font-size:8pt;
   padding:0;
   margin-right:3px;
 }
 
-#list_task_container .donebutton:hover
+#list_task_container .done:hover
 {
-  color:white;
   background-color:#66DD66;
-  float:right;
-  width:20px;
-  height:20px;
-  border-radius:50%;
   border:1px solid #66DD66;
   cursor:hand;
 }

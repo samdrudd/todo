@@ -137,14 +137,14 @@ function addTaskToList(task)
   // Create the delete button 
   var delButton = $("<input>");
   delButton.attr("type", "button");
-  delButton.attr("class", "deletebutton");
-  delButton.attr("value", "x");
+  delButton.addClass("delete action");
+  delButton.attr("value", String.fromCharCode(10008));
   delButton.attr("onClick", "deleteTask(" + task.id + ");");
 
   // Create done button
   var doneButton = $("<input>");
   doneButton.attr("type", "button");
-  doneButton.attr("class", "donebutton");
+  doneButton.addClass("done action");
   doneButton.attr("value", String.fromCharCode(10004));
   doneButton.attr("onClick", 'doneTask(" + task.id + ");');
 
