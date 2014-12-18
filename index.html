@@ -38,7 +38,7 @@ function createTask(title, desc)
 {
   // Generate ID and return JSON object
   id = new Date().getTime();
-  return {id: id, title: title, desc: desc}
+  return {id: id, title: title, desc: desc, status: 0}
 }
 
 // -------------------------------------------------
@@ -115,14 +115,17 @@ function getTaskByID(taskid)
 function doneTask(taskid)
 {
   var task = $("#" + taskid);
+  var taskObj = getTaskByID(taskid);
+
   if (!task.hasClass("completed"))
   {
     $("#" + taskid + " pre").slideUp(500, function(){ task.addClass("completed"); });
     $("#" + taskid + " .donebutton").attr("value", "Done.");
+    taskObj.status = 1;
   }
   else
   {
-    taskOBJ = getTaskByID(taskid);
+    taskObj.status = 0;
     task.removeClass("completed");
     $("#" + taskid + " pre").slideDown(500);
   }
@@ -131,10 +134,31 @@ function doneTask(taskid)
 function addTaskToList(task)
 {
   console.log(task.title);
-  var delButton = "<input type='button' class='deletebutton' value='x' onClick='deleteTask(" + task.id + ");'></input>";
-  var doneButton = "<input type='button' class='donebutton' value='&#10003' onClick='doneTask(" + task.id + ");'></input>";
-  var add = "<div id=\"" + task.id + "\" class=\"task\">" + delButton + doneButton + "<h3>" + task.title + "</h3><pre>" + task.desc + "</pre></div>";
-  $("#list_task_container").html($("#list_task_container").html() + add);
+  // Create the delete button 
+  var delButton = $("<input>");
+  delButton.attr("type", "button");
+  delButton.attr("class", "deletebutton");
+  delButton.attr("value", "x");
+  delButton.attr("onClick", "deleteTask(" + task.id + ");");
+
+  // Create done button
+  var doneButton = $("<input>");
+  doneButton.attr("type", "button");
+  doneButton.attr("class", "donebutton");
+  doneButton.attr("value", String.fromCharCode(10004));
+  doneButton.attr("onClick", 'doneTask(" + task.id + ");');
+
+  // Create task div
+  var taskDiv = $("<div>");
+  taskDiv.attr("id", task.id);
+  taskDiv.attr("class", "task");
+  taskDiv.append(delButton);
+  taskDiv.append(doneButton);
+  taskDiv.append("<h3>" + task.title + "</h3><pre>" + task.desc + "</pre>");
+
+
+  //var add = "<div id=\"" + task.id + "\" class=\"task" + status + "\">" + delButton + doneButton + "<h3>" + task.title + "</h3><pre>" + task.desc + "</pre></div>";
+  $("#list_task_container").append(taskDiv);
 }
 
 function updateList()
