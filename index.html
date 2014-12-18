@@ -146,7 +146,7 @@ function addTaskToList(task)
   doneButton.attr("type", "button");
   doneButton.addClass("done action");
   doneButton.attr("value", String.fromCharCode(10004));
-  doneButton.attr("onClick", 'doneTask(" + task.id + ");');
+  doneButton.attr("onClick", 'doneTask(' + task.id + ');');
 
   // Create task div
   var taskDiv = $("<div>");
