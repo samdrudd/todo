@@ -7,32 +7,13 @@
 <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 <script>
-var data = new Array();
-
-// -------------------------------------------------
-// FUNCTION: init
-// Initialize stuff, read in localStorage and add
-// tasks to list
-// -------------------------------------------------
-function init()
-{
-  // Read in localStorage to data
-  data = JSON.parse(localStorage.getItem("todoData"));
-
-  if (data == null)
-  {
-    data = new Array();
-  }
-
-  // Populate list with data
-  updateList();
-}
+var data = JSON.parse(localStorage.getItem("todoData"));
+data = data || {};
 
 // -------------------------------------------------
 // FUNCTION: createTask
 // ACCEPTS: string title, string desc
-// Creates JSON representation of task, with date-
-// based ID attached and returns it
+// RETURNS: task object
 // -------------------------------------------------
 function createTask(title, desc)
 {
@@ -45,12 +26,15 @@ function createTask(title, desc)
 // FUNCTION: addTask
 // ACCEPTS: Object task (returned from createTask)
 // Adds given task to data array and localStorage
-// Calls updateList() to add it to the list
+// 
 // -------------------------------------------------
 function addTask(task)
 {
   // Add task to localStorage
-  data.push(task);
+  data[task.id] = task;
+    
+  var test = JSON.stringify(data);
+  
   localStorage.setItem("todoData", JSON.stringify(data));
 
   addTaskToList(task);
@@ -69,7 +53,7 @@ function clearTasks()
   {
     // Clear list and localStorage
     localStorage.clear();
-    data = new Array();
+    data = {};
     $("#list_task_container").html("");
   }
 }
@@ -82,85 +66,80 @@ function clearTasks()
 // -------------------------------------------------
 function deleteTask(taskid)
 {
-  // Loop through all tasks in data
-  for (i = 0; i < data.length; i++)
-  {
-    // If we found the matching ID
-    if (data[i].id === taskid)
+    // Confirm and delete the task
+    if (confirm("Click OK to delete task:\n\n" + data[taskid].title))
     {
-      // Confirm and delete the task
-      if (confirm("Click OK to delete task:\n\n" + data[i].title))
-      {
-        // Remove the task from the data array
-        data.splice(i, 1);
+      // Remove the task from the data array
+      delete data[taskid];
 
-        // Push data to localStorage
-        localStorage.setItem("todoData", JSON.stringify(data));
+      // Push data to localStorage
+      localStorage.setItem("todoData", JSON.stringify(data));
 
-        // Remove corresponding div from list
-        $("#" + taskid).fadeOut(500);
-      }
-    }
-  }
+      // Remove corresponding div from list
+      $("#" + taskid).fadeOut(500);
+	}
 }
 
-function getTaskByID(taskid)
-{
-  for (var i = 0; i < data.length; i++)
-  {
-    if (data[i].id == taskid) return data[i];
-  }
-}
-
+// -------------------------------------------------
+// FUNCTION: doneTask
+// ACCEPTS: id of task to mark done
+// Collapses task's div and highlights it green to
+// indicate the task has been completed
+// @TODO: Store task status in localStorage so that 
+// completed tasks show up as completed on page refresh
+// -------------------------------------------------
 function doneTask(taskid)
 {
   var task = $("#" + taskid);
-  var taskObj = getTaskByID(taskid);
 
   if (!task.hasClass("completed"))
   {
     $("#" + taskid + " pre").slideUp(500, function(){ task.addClass("completed"); });
-    $("#" + taskid + " .donebutton").attr("value", "Done.");
-    taskObj.status = 1;
   }
   else
   {
-    taskObj.status = 0;
     task.removeClass("completed");
     $("#" + taskid + " pre").slideDown(500);
   }
 }
 
+// -------------------------------------------------
+// FUNCTION: addTaskToList
+// ACCEPTS: task object to add to list
+// Creates and displays HTML associated with task object 
+// -------------------------------------------------
 function addTaskToList(task)
-{
-  console.log(task.title);
+{  
   // Create the delete button 
-  var delButton = $("<input>");
-  delButton.attr("type", "button");
-  delButton.addClass("delete action");
-  delButton.attr("value", String.fromCharCode(10008));
-  delButton.attr("onClick", "deleteTask(" + task.id + ");");
+  var delButton = $("<input>", {
+	type: "button",
+	class: "delete action",
+	value: String.fromCharCode(10008),
+	onClick: "deleteTask(" + task.id + ");"});
 
   // Create done button
-  var doneButton = $("<input>");
-  doneButton.attr("type", "button");
-  doneButton.addClass("done action");
-  doneButton.attr("value", String.fromCharCode(10004));
-  doneButton.attr("onClick", 'doneTask(' + task.id + ');');
+  var doneButton = $("<input>", {
+	type: "button",
+	class: "done action",
+	value: String.fromCharCode(10004),
+	onClick: "doneTask(" + task.id + ");"});
 
   // Create task div
-  var taskDiv = $("<div>");
-  taskDiv.attr("id", task.id);
-  taskDiv.attr("class", "task");
+  var taskDiv = $("<div>", {
+    id: task.id,
+	class: "task"});
   taskDiv.append(delButton);
   taskDiv.append(doneButton);
   taskDiv.append("<h3>" + task.title + "</h3><pre>" + task.desc + "</pre>");
 
-
-  //var add = "<div id=\"" + task.id + "\" class=\"task" + status + "\">" + delButton + doneButton + "<h3>" + task.title + "</h3><pre>" + task.desc + "</pre></div>";
   $("#list_task_container").append(taskDiv);
 }
 
+// -------------------------------------------------
+// FUNCTION: updateList
+// ACCEPTS: 
+// Clears both the HTML list and the list in localStorage
+// -------------------------------------------------
 function updateList()
 {
   // Clear list
@@ -175,9 +154,10 @@ function updateList()
 
 // DOCUMENT.READY
 $( document ).ready(function() {
+var data = {};
 
 // Initalize list from localStorage
-init();
+updateList();
 
 // -----------------------------------------------
 // FUNCTION: ADD TASK
