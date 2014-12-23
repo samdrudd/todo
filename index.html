@@ -18,8 +18,13 @@ data = data || {};
 function createTask(title, desc)
 {
   // Generate ID and return JSON object
-  id = new Date().getTime();
-  return {id: id, title: title, desc: desc, status: 0}
+  today = new Date();
+	
+  id = today.getTime();
+   
+  todaysDate = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
+  
+  return {id: id, title: title, desc: desc, status: 0, created: todaysDate}
 }
 
 // -------------------------------------------------
@@ -94,12 +99,12 @@ function doneTask(taskid)
 
   if (!task.hasClass("completed"))
   {
-    $("#" + taskid + " pre").slideUp(500, function(){ task.addClass("completed"); });
+    $("#" + taskid + " pre, #" + taskid + " h4").slideUp(500, function(){ task.addClass("completed"); });
   }
   else
   {
     task.removeClass("completed");
-    $("#" + taskid + " pre").slideDown(500);
+    $("#" + taskid + " pre, #" + taskid + " h4").slideDown(500);
   }
 }
 
@@ -130,7 +135,7 @@ function addTaskToList(task)
 	class: "task"});
   taskDiv.append(delButton);
   taskDiv.append(doneButton);
-  taskDiv.append("<h3>" + task.title + "</h3><pre>" + task.desc + "</pre>");
+  taskDiv.append("<h3>" + task.title + "</h3><h4>Created: " + task.created + "</h4><pre>" + task.desc + "</pre>");
 
   $("#list_task_container").append(taskDiv);
 }
