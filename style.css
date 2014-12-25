@@ -17,23 +17,52 @@ div#add_task_container
 
 #add_task_container input, textarea
 {
-
   width: 100%;
 }
 
 textarea
 {
+  box-shadow: 2px 2px #CCC;
+  border:2px solid #CCC;
+  padding:5px;
   resize: none;
+  font-size:10pt;
+  color:#999;
   font-family:Arial,sans-serif;
+}
+
+textarea:focus
+{
+  box-shadow: 2px 2px #999;
+  border:2px solid #999;
+  color:#666;
 }
 
 input
 {
   font-family:Arial,sans-serif;
+  font-size:10pt;
+}
+
+input[type="text"]:focus
+{
+  box-shadow: 2px 2px #999;
+  border:2px solid #999;
+  color:#666;
+}
+
+input[type="text"]
+{
+  padding:5px;
+  box-shadow: 2px 2px #CCC;
+  border:2px solid #CCC;
+  margin-bottom:5px;
+  color:#999;
 }
 
 .button
 {
+  box-shadow:0;
   background-color:#EEE;
   border-radius:2px;
   border:1px solid #EEE;
@@ -66,13 +95,14 @@ div#list_task_container
   padding:0;
 }
 
-#list_task_container h3
+.task h3
 {
   padding:0;
   margin:0;
+  vertical-align:middle;
 }
 
-#list_task_container h4
+.task h4
 {
   padding:0;
     padding-bottom:2px;
@@ -85,45 +115,40 @@ div#list_task_container
   font-weight:normal;
 }
 
-#list_task_container .action
+.task .description
 {
-  color:white;
+  display:inline-block;
+}
+
+.action
+{
   float:right;
-  width:20px;
-  height:20px;
-  font-size:10px;
   text-align:center;
-  vertical-align:middle;
-  border-radius:50%;
   transition: all 0.2s linear;
 }
 
-#list_task_container .delete
+.delete, .clear
 {
-  background-color:#DD0000;
-  border:1px solid #DD0000;
+  color:#FF6666;
 }
 
-#list_task_container .delete:hover
+.delete:hover, .clear:hover
 {
-  background-color:#DD6666;
-  border:1px solid #DD6666;
-  cursor:hand;
+  color:#AA0000;
+  cursor:pointer;
 }
 
-#list_task_container .done
+.done, .add
 {
-  background-color:#00DD00;
-  border:1px solid #00DD00;
+  color:#66AA66;
   padding:0;
   margin-right:3px;
 }
 
-#list_task_container .done:hover
+.done:hover, .add:hover
 {
-  background-color:#66DD66;
-  border:1px solid #66DD66;
-  cursor:hand;
+  color:#006600;
+  cursor:pointer;
 }
 
 .task
@@ -137,13 +162,37 @@ div#list_task_container
 
 .completed
 {
-  background-color:#BBFFBB;
+  background-color:#EEFAEE;
   font-style:italic;
   color:#66AA66;
+}
+
+.deleting
+{
+  color:#330000;
+  background-color:#CCAAAA;
+}
+
+#list_actions_container
+{
+  font-size:26pt;
+}
+
+#list_task_container .action
+{
+  font-size:16pt;
 }
 
 #list_task_container .completed h3
 {
   padding:0;
   margin:0;
+}
+
+#done_container
+{
+  vertical-align: text-bottom;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 8pt;
 }

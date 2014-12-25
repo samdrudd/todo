@@ -2,9 +2,13 @@
 <head>
 <title>To Do</title>
 <link rel="stylesheet" href="style.css" type="text/css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
 
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script src="markdown.min.js"></script>
+
 
 <script>
 var data = JSON.parse(localStorage.getItem("todoData"));
@@ -45,6 +49,8 @@ function addTask(task)
   addTaskToList(task);
   $("#" + task.id).hide();
   $("#" + task.id).fadeIn(500);
+  
+  $("#list_task_container").sortable();
 }
 
 // -------------------------------------------------
@@ -71,6 +77,10 @@ function clearTasks()
 // -------------------------------------------------
 function deleteTask(taskid)
 {
+	var taskObj = $("#" + taskid);
+	
+	taskObj.addClass("deleting");
+	
     // Confirm and delete the task
     if (confirm("Click OK to delete task:\n\n" + data[taskid].title))
     {
@@ -82,6 +92,10 @@ function deleteTask(taskid)
 
       // Remove corresponding div from list
       $("#" + taskid).fadeOut(500);
+	}
+	else
+	{
+		taskObj.removeClass("deleting");
 	}
 }
 
@@ -99,14 +113,18 @@ function doneTask(taskid)
 
   if (!task.hasClass("completed"))
   {
-    $("#" + taskid + " pre, #" + taskid + " h4").slideUp(500, function(){ task.addClass("completed"); });
+    $("#" + taskid + " .description, #" + taskid + " h4").slideUp(500, function(){ 
+		task.addClass("completed"); 
+		$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+	});
 	data[taskid].status = 1;
 	
   }
   else
   {
     task.removeClass("completed");
-    $("#" + taskid + " pre, #" + taskid + " h4").slideDown(500);
+	$("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
+    $("#" + taskid + " .description, #" + taskid + " h4").slideDown(500);
 	data[taskid].status = 0;
   }
   
@@ -122,35 +140,37 @@ function doneTask(taskid)
 function addTaskToList(task)
 {  
   // Create the delete button 
-  var delButton = $("<input>", {
-	type: "button",
-	class: "delete action",
-	value: String.fromCharCode(10008),
+  var delButton = $("<span>", {
+	class: "fa fa-ban action delete",
+	title: "Delete",
 	onClick: "deleteTask(" + task.id + ");"});
 
   // Create done button
-  var doneButton = $("<input>", {
-	type: "button",
-	class: "done action",
-	value: String.fromCharCode(10004),
+  var doneButton = $("<span>", {
+    id: task.id + "-done",
+	class: "fa fa-check-circle-o action done",
+	title: "Done",
 	onClick: "doneTask(" + task.id + ");"});
 
   // Create task div
   var taskDiv = $("<div>", {
     id: task.id,
+	style: "",
 	class: "task"});
+	
   taskDiv.append(delButton);
   taskDiv.append(doneButton);
   
-  taskDiv.append("<h3>" + task.title + "</h3><h4>Created: " + task.created + "</h4><pre>" + task.desc + "</pre>");
+  taskDiv.append("<h3>" + task.title + "</h3><h4>Created: " + task.created + "</h4><span class='description' style=''>" + task.desc + "</span>");
 
   $("#list_task_container").append(taskDiv);
   
   // If task is stored as completed
   if (task.status === 1)
   {
+    $("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
 	taskDiv.addClass("completed");
-	$("#" + taskid + " pre, #" + taskid + " h4").hide();
+	$("#" + taskid + " .description, #" + taskid + " h4").hide();
   }
 }
 
@@ -171,6 +191,7 @@ function updateList()
   }
 }
 
+
 // DOCUMENT.READY
 $( document ).ready(function() {
 var data = {};
@@ -186,6 +207,8 @@ $( "#add-task" ).click(function() {
   // Get task info from form
   var title = $("#task-title").val();
   var desc = $("#task-desc").val();
+  
+  desc = markdown.toHTML(desc);
 
   // If no title, don't add anything
   if (title === "") return;
@@ -212,23 +235,24 @@ $(window).scroll(function() {
 
 <body>
 
-<div id="add_task_container">
-  <div>
-    <input id="task-title" type="text" placeholder="Title" size="30" />
-  </div>
-  <div>
-    <textarea id="task-desc" placeholder="Description" rows="5" cols="30"></textarea>
-  </div>
-  <div>
-    <input id="add-task" type="submit" class="button" value="+New Task" />
-  </div>
-  <div>
-    <input type="button" class="button" value="Clear Tasks" onClick="clearTasks()"></input>
-  </div>
+<div id="left_pane">
+	<div id="add_task_container">
+	  <div id="task_title_input" style="float:left;">
+		<input id="task-title" type="text" placeholder="Title" size="30" />
+	  </div>
+	  <div id="list_actions_container">
+		<span title="Clear All Tasks" class="fa fa-ban action clear" onClick="clearTasks()"></span>
+		<span title="Add Task" id="add-task" class="fa fa-plus-circle action add"></span>
+	  </div>
+	  <div>
+		<textarea id="task-desc" placeholder="Description" rows="5" cols="30"></textarea>
+	  </div>
+	</div>
 </div>
 
-<div id="list_task_container">
-
+<div id="right_pane">
+	<div id="list_task_container">
+	</div>
 </div>
 
 </body>
