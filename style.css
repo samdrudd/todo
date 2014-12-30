@@ -33,6 +33,7 @@ textarea
 
 textarea:focus
 {
+  outline:none;
   box-shadow: 2px 2px #999;
   border:2px solid #999;
   color:#666;
@@ -46,6 +47,7 @@ input
 
 input[type="text"]:focus
 {
+  outline:none;
   box-shadow: 2px 2px #999;
   border:2px solid #999;
   color:#666;
