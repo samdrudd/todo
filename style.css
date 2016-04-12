@@ -78,19 +78,19 @@ input[type="text"]
   cursor:hand;
 }
 
-div#list_task_container
+div#right_pane
 {
   width: 75%;
   float: right;
 }
 
-#list_task_container
+#right_pane
 {
   font-family: Helvetica;
   font-size: 12pt;
 }
 
-#list_task_container pre
+#right_pane pre
 {
   white-space: pre-wrap;
   margin:0;
