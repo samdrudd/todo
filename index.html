@@ -110,17 +110,16 @@ function doneTask(taskid)
   // If the task is not already marked completed...
   if (!task.hasClass("completed"))
   {
+	task.addClass("completed");
+	// Change the checkmark circle icon from open to filled to further indicate task completion
+	$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");	
+	
 	// Slide up task description and add 'completed' class to it
-    $("#" + taskid + " .description, #" + taskid + " h4").slideUp(500, function(){ 
-		task.addClass("completed"); 
+    $("#" + taskid + " .description, #" + taskid + " h4").slideUp();
 		
-		// Change the checkmark circle icon from open to filled to further indicate task completion
-		$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
-		
-		// Fade out the task and fade it back in under the 'completed tasks' section
-		task.fadeOut(function() {
-			task.remove().appendTo("#container_tasks_completed").fadeIn();
-		});
+	// Fade out the task and fade it back in under the 'completed tasks' section
+	task.fadeOut(function() {
+		task.remove().appendTo("#container_tasks_completed").fadeIn();
 	});
 	
 	// Store completion status in localStorage data
@@ -134,7 +133,7 @@ function doneTask(taskid)
 	$("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
 	
 	// Slide down the description
-	$("#" + taskid + " .description, #" + taskid + " h4").slideDown(500);
+	$("#" + taskid + " .description, #" + taskid + " h4").slideDown();
 	
 	task.fadeOut(function() {
 		task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
