@@ -109,20 +109,40 @@ function doneTask(taskid)
 {
   var task = $("#" + taskid);
 
+  // If the task is not already marked completed...
   if (!task.hasClass("completed"))
   {
+	// Slide up task description and add 'completed' class to it
     $("#" + taskid + " .description, #" + taskid + " h4").slideUp(500, function(){ 
 		task.addClass("completed"); 
+		
+		// Change the checkmark circle icon from open to filled to further indicate task completion
 		$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+		
+		// Fade out the task and fade it back in under the 'completed tasks' section
+		task.fadeOut(function() {
+			task.remove().appendTo("#container_tasks_completed").fadeIn();
+		});
 	});
-	data[taskid].status = 1;
 	
+	// Store completion status in localStorage data
+	data[taskid].status = 1;
   }
+  // If the task is already marked as completed
   else
   {
-    task.removeClass("completed");
+	// Remove 'completed' class and change checkmark circle icon from filled to open
+	task.removeClass("completed");
 	$("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
-    $("#" + taskid + " .description, #" + taskid + " h4").slideDown(500);
+	
+	// Slide down the description
+	$("#" + taskid + " .description, #" + taskid + " h4").slideDown(500);
+	
+	task.fadeOut(function() {
+		task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
+	});
+	
+	// Store completion status in localStorage data
 	data[taskid].status = 0;
   }
   
@@ -270,10 +290,10 @@ $(window).scroll(function() {
 
 <div id="right_pane">
 	<div id="container_tasks_uncompleted">
-		<h1 class="header">Open Tasks</h1>
+		<h3 class="header">Open Tasks</h3>
 	</div>
 	<div id="container_tasks_completed">
-		<h1 class="header">Completed Tasks</h1>
+		<h3 class="header">Completed Tasks</h3>
 	</div>
 </div>
 
