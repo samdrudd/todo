@@ -102,8 +102,6 @@ function deleteTask(taskid)
 // ACCEPTS: id of task to mark done
 // Collapses task's div and highlights it green to
 // indicate the task has been completed
-// @TODO: Store task status in localStorage so that 
-// completed tasks show up as completed on page refresh
 // -------------------------------------------------
 function doneTask(taskid)
 {
@@ -152,7 +150,7 @@ function doneTask(taskid)
 
 // -------------------------------------------------
 // FUNCTION: addTaskToList
-// ACCEPTS: task object to add to list
+// ACCEPTS: task - task object to add to list
 // Creates and displays HTML associated with task object 
 // -------------------------------------------------
 function addTaskToList(task)
@@ -181,15 +179,19 @@ function addTaskToList(task)
   
   taskDiv.append("<h3>" + task.title + "</h3><h4>Created: " + task.created + "</h4><span class='description' style=''>" + task.desc + "</span>");
 
-  $("#container_tasks_uncompleted").append(taskDiv);
+  
   
   // If task is stored as completed
   if (task.status === 1)
   {
+    $("#container_tasks_completed").append(taskDiv);
     $("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
 	taskDiv.addClass("completed");
 	$("#" + taskid + " .description, #" + taskid + " h4").hide();
+	
   }
+  else
+	$("#container_tasks_uncompleted").append(taskDiv);
 }
 
 // -------------------------------------------------
