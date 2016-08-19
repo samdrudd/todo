@@ -7,7 +7,6 @@
 
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-<script src="markdown.min.js"></script>
 
 
 <script>
@@ -153,7 +152,7 @@ function doneTask(taskid)
 // Creates and displays HTML associated with task object 
 // -------------------------------------------------
 function addTaskToList(task)
-{  
+{
   // Create the delete button 
   var delButton = $("<span>", {
 	class: "fa fa-ban action delete",
@@ -246,8 +245,6 @@ $( "#add-task" ).click(function() {
   // Get task info from form
   var title = $("#task-title").val();
   var desc = $("#task-desc").val();
-  
-  desc = markdown.toHTML(desc);
 
   // If no title, don't add anything
   if (title === "") return;
