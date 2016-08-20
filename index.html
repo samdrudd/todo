@@ -40,14 +40,13 @@ function addTask(task)
 {
   // Add task to localStorage
   data[task.id] = task;
-    
-  var test = JSON.stringify(data);
+  var taskDiv = $("#" + task.id);
   
   localStorage.setItem("todoData", JSON.stringify(data));
 
   addTaskToList(task);
-  $("#" + task.id).hide();
-  $("#" + task.id).fadeIn(500);
+  taskDiv.hide();
+  taskDiv.fadeIn(500);
 }
 
 // -------------------------------------------------
@@ -143,6 +142,7 @@ function doneTask(taskid)
   }
   
   // Push data to localStorage
+  // @TODO: Probably should create a 'pushData' function to encapsulate this
   localStorage.setItem("todoData", JSON.stringify(data));
 }
 
@@ -196,8 +196,9 @@ function addTaskToList(task)
 // FUNCTION: clearList
 // ACCEPTS: 
 //   completed - boolean, if true clear completed tasks
-//   uncompleted - boolen, if true clear uncompleted tasks
+//   uncompleted - boolean, if true clear uncompleted tasks
 // Clears out HTML list of taks (DOES NOT UPDATE localStorage)
+// @TODO: Make separate 'clearCompletedTasks' and 'clearUncompletedTasks' that call into this function
 // -------------------------------------------------
 function clearList(completed, uncompleted)
 {
@@ -220,7 +221,7 @@ function clearList(completed, uncompleted)
 function updateList()
 {
   // Clear list
-  clearList(true, true)
+  clearList(true, true);
 
   // Repopulate with tasks from data
   for (taskid in data)
@@ -240,6 +241,7 @@ updateList();
 // -----------------------------------------------
 // FUNCTION: ADD TASK
 // Adds a task to the list and to localStorage
+// @TODO: Create separate function for this and add onClick to add task button, to follow same pattern as rest of app
 // -----------------------------------------------
 $( "#add-task" ).click(function() {
   // Get task info from form
