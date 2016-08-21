@@ -5,18 +5,6 @@ data = data || {};
 // PARAMS: string title, string desc
 // RETURNS: task object
 // -------------------------------------------------
-function btn_addNewTask(title, desc)
-{
-    task = createTask(title, desc);
-    addTaskToData(task);
-    addTaskToList(task);
-}
-
-
-// -------------------------------------------------
-// PARAMS: string title, string desc
-// RETURNS: task object
-// -------------------------------------------------
 function createTask(title, desc)
 {
   // Generate ID and return JSON object
@@ -38,7 +26,7 @@ function addTaskToData(task)
   // Add task to localStorage
   data[task.id] = task;
 
-  localStorage.setItem("todoData", JSON.stringify(data));
+  pushDataToLocalStorage();
 }
 
 // -------------------------------------------------
@@ -88,6 +76,17 @@ function addTaskToList(task)
 }
 
 // -------------------------------------------------
+// PARAMS: string title, string desc
+// RETURNS: task object
+// -------------------------------------------------
+function btn_addNewTask(title, desc)
+{
+    task = createTask(title, desc);
+    addTaskToData(task);
+    addTaskToList(task);
+}
+
+// -------------------------------------------------
 // Clears list as well as localStorage
 // -------------------------------------------------
 function btn_deleteAllTasks()
@@ -121,7 +120,7 @@ function btn_deleteTask(taskid)
       delete data[taskid];
 
       // Push data to localStorage
-      localStorage.setItem("todoData", JSON.stringify(data));
+      pushDataToLocalStorage();
 
       // Remove corresponding div from list
       $("#" + taskid).fadeOut(500);
@@ -178,18 +177,14 @@ function btn_finishTask(taskid)
   }
 
   // Push data to localStorage
-  // @TODO: Probably should create a 'pushData' function to encapsulate this
-  localStorage.setItem("todoData", JSON.stringify(data));
+  pushDataToLocalStorage();
 }
-
-
 
 // -------------------------------------------------
 // PARAMS:
 //   completed - boolean, if true clear completed tasks
 //   uncompleted - boolean, if true clear uncompleted tasks
 // Clears out HTML list of tasks (DOES NOT UPDATE localStorage)
-// @TODO: Make separate 'clearCompletedTasks' and 'clearUncompletedTasks' that call into this function
 // -------------------------------------------------
 function clearList(completed, uncompleted)
 {
@@ -238,19 +233,21 @@ function updateList()
   }
 }
 
-
-
+function pushDataToLocalStorage()
+{
+    localStorage.setItem("todoData", JSON.stringify(data));
+}
 
 // DOCUMENT.READY
 $( document ).ready(function() {
-var data = {};
+    var data = {};
 
-// Initalize list from localStorage
-updateList();
+    // Initalize list from localStorage
+    updateList();
 
-// Keep add task form with you as you scroll
-$(window).scroll(function() {
-  $("#add_task_container").animate({"marginTop": ($(window).scrollTop() + 5) + "px"}, 0);
-});
+    // Keep add task form with you as you scroll
+    $(window).scroll(function() {
+      $("#add_task_container").animate({"marginTop": ($(window).scrollTop() + 5) + "px"}, 0);
+    });
 
 }); // END DOCUMENT.READY
