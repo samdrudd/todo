@@ -198,3 +198,25 @@ div#right_pane
   font-weight: bold;
   font-size: 8pt;
 }
+
+/* UI DIALOG */
+
+.no-close .ui-dialog-titlebar-close
+{
+    display: none;
+}
+
+.ui-dialog-titlebar
+{
+    display: none;
+}
+
+.ui-dialog
+{
+    padding-top: 25px;
+}
+
+.ui-dialog-buttonpane
+{
+    border: 0;
+}

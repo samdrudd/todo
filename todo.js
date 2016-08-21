@@ -38,15 +38,13 @@ function addTaskToList(task)
   // Create the delete button
   var delButton = $("<span>", {
 	class: "fa fa-ban action delete",
-	title: "Delete",
-	onClick: "btn_deleteTask(" + task.id + ");"});
+	title: "Delete"});
 
   // Create done button
   var doneButton = $("<span>", {
     id: task.id + "-done",
 	class: "fa fa-check-circle-o action done",
-	title: "Done",
-	onClick: "btn_finishTask(" + task.id + ");"});
+	title: "Done"});
 
   // Create task div
   var taskDiv = $("<div>", {
@@ -91,15 +89,33 @@ function btn_addNewTask(title, desc)
 // -------------------------------------------------
 function btn_deleteAllTasks()
 {
-  // Prompt for confirmation
-  // @TODO: Make a better prompt for this
-  if (confirm("Click OK to delete all tasks."))
-  {
     // Clear list and localStorage
     localStorage.clear();
     data = {};
     clearAllTasks();
-  }
+}
+
+function ui_confirmDialog(message, callback, params)
+{
+    var dialog = $("<div>" + message + "</div>");
+
+	dialog.dialog({
+	    dialogClass: "no-close",
+	    resizable: false,
+	    height: "auto",
+	    width: 400,
+	    modal: true,
+	    buttons: {
+	        OK: function () {
+	            $(this).dialog("close");
+	            callback(params);
+	        },
+	        Cancel: function () {
+	            $(this).dialog("close");
+	        }
+	    }
+	});
+
 }
 
 // -------------------------------------------------
@@ -113,22 +129,14 @@ function btn_deleteTask(taskid)
 
 	taskObj.addClass("deleting");
 
-    // Confirm and delete the task
-    if (confirm("Click OK to delete task:\n\n" + data[taskid].title))
-    {
-      // Remove the task from the data array
-      delete data[taskid];
+    // Remove the task from the data array
+    delete data[taskid];
 
-      // Push data to localStorage
-      pushDataToLocalStorage();
+    // Push data to localStorage
+    pushDataToLocalStorage();
 
-      // Remove corresponding div from list
-      $("#" + taskid).fadeOut(500);
-	}
-	else
-	{
-		taskObj.removeClass("deleting");
-	}
+    // Remove corresponding div from list
+    $("#" + taskid).fadeOut(500);
 }
 
 // -------------------------------------------------
@@ -250,4 +258,25 @@ $( document ).ready(function() {
       $("#add_task_container").animate({"marginTop": ($(window).scrollTop() + 5) + "px"}, 0);
     });
 
+    // Click handler for delete task button
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.delete", function() {
+        var taskid = $(this).parent()[0].id;
+
+        console.log(taskid)
+
+        ui_confirmDialog("Are you sure you want to delete this task?", btn_deleteTask, taskid);
+    });
+
+    // Click handler for finish task button
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.done", function() {
+        var taskid = $(this).parent()[0].id;
+
+        btn_finishTask(taskid);
+    });
+
+    $(".action.clear").on("click", function() {
+        ui_confirmDialog("Are you sure you want to delete all tasks?", btn_deleteAllTasks, null);
+    })
+
 }); // END DOCUMENT.READY
+

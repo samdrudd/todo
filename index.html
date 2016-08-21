@@ -1,9 +1,10 @@
 <html>
 <head>
 <title>To Do</title>
-<link rel="stylesheet" href="style.css" type="text/css">
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" rel="stylesheet">
 
+<link rel="stylesheet" href="style.css" type="text/css">
 
 <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
@@ -23,7 +24,7 @@
 		<textarea id="task-desc" placeholder="Description" rows="5" cols="30"></textarea>
 	  </div>
 	  <div id="list_actions_container">
-		<span title="Delete All Tasks" class="fa fa-ban action clear" onClick="btn_deleteAllTasks()"></span>
+		<span title="Delete All Tasks" class="fa fa-ban action clear"></span>
 		<span title="Add Task" id="add-task" class="fa fa-plus-circle action add" onClick="btn_addNewTask($('#task-title').val(),$('#task-desc').val())"></span>
 	  </div>
 	</div>
