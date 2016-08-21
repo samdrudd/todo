@@ -55,7 +55,7 @@ function addTaskToList(task)
   taskDiv.append(delButton);
   taskDiv.append(doneButton);
 
-  taskDiv.append("<h3>" + task.title + "</h3><h4>Created: " + task.created + "</h4><span class='description' style=''>" + task.desc + "</span>");
+  taskDiv.append("<h3 id=" + task.id + "-title>" + task.title + "</h3><h4>Created: " + task.created + "</h4><span class='description' style=''>" + task.desc + "</span>");
 
   // If task is stored as completed
   if (task.status === 1)
@@ -79,9 +79,16 @@ function addTaskToList(task)
 // -------------------------------------------------
 function btn_addNewTask(title, desc)
 {
+    // Don't add a task w/ no title
+    if (title === "") return;
+
+    // Create task, add to data + html
     task = createTask(title, desc);
     addTaskToData(task);
     addTaskToList(task);
+
+    // Clear form
+    $("#task-title, #task-desc").val('');
 }
 
 // -------------------------------------------------
@@ -95,7 +102,14 @@ function btn_deleteAllTasks()
     clearAllTasks();
 }
 
-function ui_confirmDialog(message, callback, params)
+// -------------------------------------------------
+// PARAMS:
+//  message - the text to display in the prompt
+//  callback - function to call if user hits OK
+//  args - arguments to pass to callback function
+// Create a jQuery UI dialog-based prompt
+// -------------------------------------------------
+function ui_confirmDialog(message, callback, args)
 {
     var dialog = $("<div>" + message + "</div>");
 
@@ -108,7 +122,7 @@ function ui_confirmDialog(message, callback, params)
 	    buttons: {
 	        OK: function () {
 	            $(this).dialog("close");
-	            callback(params);
+	            callback(args);
 	        },
 	        Cancel: function () {
 	            $(this).dialog("close");
@@ -136,7 +150,7 @@ function btn_deleteTask(taskid)
     pushDataToLocalStorage();
 
     // Remove corresponding div from list
-    $("#" + taskid).fadeOut(500);
+   taskObj.fadeOut(500);
 }
 
 // -------------------------------------------------
@@ -261,10 +275,12 @@ $( document ).ready(function() {
     // Click handler for delete task button
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.delete", function() {
         var taskid = $(this).parent()[0].id;
+        var taskTitle = $("#"+ taskid + "-title").text();
 
-        console.log(taskid)
+        var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
 
-        ui_confirmDialog("Are you sure you want to delete this task?", btn_deleteTask, taskid);
+        ui_confirmDialog(message, btn_deleteTask, taskid);
+
     });
 
     // Click handler for finish task button
@@ -274,9 +290,15 @@ $( document ).ready(function() {
         btn_finishTask(taskid);
     });
 
+    // Click handler for delete all tasks button
     $(".action.clear").on("click", function() {
         ui_confirmDialog("Are you sure you want to delete all tasks?", btn_deleteAllTasks, null);
-    })
+    });
+
+    // Click handler for add new task button
+    $(".action.add").on("click", function() {
+        btn_addNewTask($("#task-title").val(), $("#task-desc").val());
+    });
 
 }); // END DOCUMENT.READY
 
