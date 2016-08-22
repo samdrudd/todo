@@ -1,158 +1,35 @@
-body
-{
-  font-family: Helvetica,Arial,sans-serif;
-  padding: 0;
-  margin: 0;
-  position: relative;
-}
-
 #navbar
 {
     position: fixed;
     top: 0;
     width: 100%;
-    height: 50px;
+    height: auto;
     padding: 0;
         padding-top: 15px;
         padding-bottom: 15px;
-    margin: 0;
-        margin-bottom: 10px;
-    display: block;
-    clear: both;
     border-bottom: 1px solid #DDD;
     background-color: #FFF;
     z-index: 1;
 }
 
-#task-text:focus
+#add_task_container
 {
-  outline: none;
-  color: #666;
+    width: 100%;
+    padding-top: 25px;
 }
 
 #task-text
 {
-  width: 90%;
-  padding: 10px;
-  color: #DDD;
-  border: 1px solid #EEE;
-  font-size: 16pt;
-}
-
-#add_task_container
-{
-    width: 33%;
-    margin: 0 auto;
-}
-
-#container_tasks
-{
-    width: 65%;
-    margin: 0 auto;
-        margin-top: 80px;
-}
-
-#container_tasks_completed
-{
-    display: none;
-}
-
-.action
-{
-  transition: all 0.2s linear;
-  font-size: 32pt;
-  vertical-align: middle;
-}
-
-.delete, .clear
-{
-  color:#FF6666;
-}
-
-.delete:hover, .clear:hover
-{
-  color:#AA0000;
-  cursor:pointer;
-}
-
-.done, .add
-{
-  color:#99DD99;
-  padding:5px;
-}
-
-.done:hover, .add:hover
-{
-  color:#66AA66;
-  cursor:pointer;
-}
-
-.task
-{
-    margin: 0;
-    padding: 20px;
-    font-size: 24pt;
-    border-bottom: 1px solid #EEE;
-    color: #999;
-}
-
-.task-actions
-{
-  padding-right: 15px;
-}
-
-.completed
-{
-  background-color:#EEFAEE;
-  font-style:italic;
-  color:#66AA66;
-}
-
-.deleting
-{
-  color:#330000;
-  background-color:#CCAAAA;
-}
-
-/* UI DIALOG */
-
-.no-close .ui-dialog-titlebar-close
-{
-    display: none;
-}
-
-.ui-dialog-titlebar
-{
-    display: none;
-}
-
-.ui-dialog
-{
-    padding-top: 25px;
-}
-
-.ui-dialog-buttonpane
-{
+    width: 85%;
+    font-size: 48pt;
+    padding: 25px;
+    margin-bottom: 25px;
     border: 0;
 }
 
-/* SHOW COMPLETED TASKS BUTTON */
-
-#container_btn_show_completed
+.action.add
 {
-    width: 100%;
+    font-size: 48pt;
     margin: 20px;
-    padding-top: 50px;
-}
-
-#btn_show_completed
-{
-    width: 33%;
-    margin: 0 auto;
-}
-
-#btn_show_completed > button
-{
-    width: 100%;
-    z-index: 0;
+    border: 1px solid red;
 }
