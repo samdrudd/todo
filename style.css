@@ -117,11 +117,6 @@ div#right_pane
   font-weight:normal;
 }
 
-.task .description
-{
-  display:inline-block;
-}
-
 .action
 {
   float:right;

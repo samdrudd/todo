@@ -5,7 +5,7 @@ data = data || {};
 // PARAMS: string title, string desc
 // RETURNS: task object
 // -------------------------------------------------
-function createTask(title, desc)
+function createTask(text)
 {
   // Generate ID and return JSON object
   today = new Date();
@@ -14,7 +14,7 @@ function createTask(title, desc)
 
   todaysDate = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
 
-  return {id: id, title: title, desc: desc, status: 0, created: todaysDate}
+  return {id: id, text: text, status: 0, created: todaysDate}
 }
 
 // -------------------------------------------------
@@ -55,7 +55,7 @@ function addTaskToList(task)
   taskDiv.append(delButton);
   taskDiv.append(doneButton);
 
-  taskDiv.append("<h3 id=" + task.id + "-title>" + task.title + "</h3><h4>Created: " + task.created + "</h4><span class='description' style=''>" + task.desc + "</span>");
+  taskDiv.append(task.text);
 
   // If task is stored as completed
   if (task.status === 1)
@@ -77,18 +77,18 @@ function addTaskToList(task)
 // PARAMS: string title, string desc
 // RETURNS: task object
 // -------------------------------------------------
-function btn_addNewTask(title, desc)
+function btn_addNewTask(text)
 {
-    // Don't add a task w/ no title
-    if (title === "") return;
+    // Don't add a task w/ no text
+    if (text === "") return;
 
     // Create task, add to data + html
-    task = createTask(title, desc);
+    task = createTask(text);
     addTaskToData(task);
     addTaskToList(task);
 
     // Clear form
-    $("#task-title, #task-desc").val('');
+    $("#task-text").val('');
 }
 
 // -------------------------------------------------
@@ -169,9 +169,6 @@ function btn_finishTask(taskid)
 	// Change the checkmark circle icon from open to filled to further indicate task completion
 	$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
 
-	// Slide up task description and add 'completed' class to it
-    $("#" + taskid + " .description, #" + taskid + " h4").slideUp();
-
 	// Fade out the task and fade it back in under the 'completed tasks' section
 	task.fadeOut(function() {
 		task.remove().appendTo("#container_tasks_completed").fadeIn();
@@ -186,9 +183,6 @@ function btn_finishTask(taskid)
 	// Remove 'completed' class and change checkmark circle icon from filled to open
 	task.removeClass("completed");
 	$("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
-
-	// Slide down the description
-	$("#" + taskid + " .description, #" + taskid + " h4").slideDown();
 
 	task.fadeOut(function() {
 		task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
@@ -275,7 +269,7 @@ $( document ).ready(function() {
     // Click handler for delete task button
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.delete", function() {
         var taskid = $(this).parent()[0].id;
-        var taskTitle = $("#"+ taskid + "-title").text();
+        var taskTitle = $("#"+ taskid).text();
 
         var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
 
@@ -297,7 +291,7 @@ $( document ).ready(function() {
 
     // Click handler for add new task button
     $(".action.add").on("click", function() {
-        btn_addNewTask($("#task-title").val(), $("#task-desc").val());
+        btn_addNewTask($("#task-text").val());
     });
 
 }); // END DOCUMENT.READY
