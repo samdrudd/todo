@@ -1,127 +1,67 @@
 body
 {
-  font-family:Arial,sans-serif;
+  font-family: Helvetica,Arial,sans-serif;
+  padding: 0;
+  margin: 0;
+  position: relative;
 }
 
-div
+#navbar
 {
-  margin: 5px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 50px;
+    padding: 0;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    margin: 0;
+        margin-bottom: 10px;
+    display: block;
+    clear: both;
+    border-bottom: 1px solid #DDD;
+    background-color: #FFF;
+    z-index: 1;
 }
 
-div#add_task_container
+#task-text:focus
 {
-  float: left;
-  width: 24%;
-  margin:0;
+  outline: none;
+  color: #666;
 }
 
-#add_task_container input, textarea
+#task-text
 {
-  width: 100%;
+  width: 90%;
+  padding: 10px;
+  color: #DDD;
+  border: 1px solid #EEE;
+  font-size: 16pt;
 }
 
-textarea
+#add_task_container
 {
-  box-shadow: 2px 2px #CCC;
-  border:2px solid #CCC;
-  padding:5px;
-  resize: none;
-  font-size:10pt;
-  color:#999;
-  font-family:Arial,sans-serif;
+    width: 33%;
+    margin: 0 auto;
 }
 
-textarea:focus
+#container_tasks
 {
-  outline:none;
-  box-shadow: 2px 2px #999;
-  border:2px solid #999;
-  color:#666;
+    width: 65%;
+    margin: 0 auto;
+        margin-top: 80px;
 }
 
-input
+#container_tasks_completed
 {
-  font-family:Arial,sans-serif;
-  font-size:10pt;
-}
-
-input[type="text"]:focus
-{
-  outline:none;
-  box-shadow: 2px 2px #999;
-  border:2px solid #999;
-  color:#666;
-}
-
-input[type="text"]
-{
-  padding:5px;
-  box-shadow: 2px 2px #CCC;
-  border:2px solid #CCC;
-  margin-bottom:5px;
-  color:#999;
-}
-
-.button
-{
-  box-shadow:0;
-  background-color:#EEE;
-  border-radius:2px;
-  border:1px solid #EEE;
-  padding:3px;
-}
-
-.button:hover
-{
-  background-color:#EEE;
-  box-shadow:2px 2px #CCC;
-  cursor:hand;
-}
-
-div#right_pane
-{
-  width: 75%;
-  float: right;
-}
-
-#right_pane
-{
-  font-family: Helvetica;
-  font-size: 12pt;
-}
-
-#right_pane pre
-{
-  white-space: pre-wrap;
-  margin:0;
-  padding:0;
-}
-
-.task h3
-{
-  padding:0;
-  margin:0;
-  vertical-align:middle;
-}
-
-.task h4
-{
-  padding:0;
-    padding-bottom:2px;
-  margin:0;
-    margin-top:3px;
-	margin-bottom:10px;
-  border-bottom:1px solid #CCC;
-  font-size:8pt;
-  font-style:italic;
-  font-weight:normal;
+    display: none;
 }
 
 .action
 {
-  float:right;
-  text-align:center;
   transition: all 0.2s linear;
+  font-size: 32pt;
+  vertical-align: middle;
 }
 
 .delete, .clear
@@ -137,24 +77,28 @@ div#right_pane
 
 .done, .add
 {
-  color:#66AA66;
-  padding:0;
-  margin-right:3px;
+  color:#99DD99;
+  padding:5px;
 }
 
 .done:hover, .add:hover
 {
-  color:#006600;
+  color:#66AA66;
   cursor:pointer;
 }
 
 .task
 {
-  background-color:#EEE;
-  box-shadow: 1px 1px #CCC;
-  margin:0;
-  padding:10px;
-  margin:5px;
+    margin: 0;
+    padding: 20px;
+    font-size: 24pt;
+    border-bottom: 1px solid #EEE;
+    color: #999;
+}
+
+.task-actions
+{
+  padding-right: 15px;
 }
 
 .completed
@@ -168,30 +112,6 @@ div#right_pane
 {
   color:#330000;
   background-color:#CCAAAA;
-}
-
-#list_actions_container
-{
-  font-size:26pt;
-}
-
-#list_task_container .action
-{
-  font-size:16pt;
-}
-
-#list_task_container .completed h3
-{
-  padding:0;
-  margin:0;
-}
-
-#done_container
-{
-  vertical-align: text-bottom;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 8pt;
 }
 
 /* UI DIALOG */
@@ -214,4 +134,25 @@ div#right_pane
 .ui-dialog-buttonpane
 {
     border: 0;
+}
+
+/* SHOW COMPLETED TASKS BUTTON */
+
+#container_btn_show_completed
+{
+    width: 100%;
+    margin: 20px;
+    padding-top: 50px;
+}
+
+#btn_show_completed
+{
+    width: 33%;
+    margin: 0 auto;
+}
+
+#btn_show_completed > button
+{
+    width: 100%;
+    z-index: 0;
 }

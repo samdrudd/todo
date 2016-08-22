@@ -15,24 +15,23 @@
 
 <body>
 
-<div id="left_pane">
+<div id="navbar">
 	<div id="add_task_container">
-	  <div id="task_title_input" style="float:left;">
-		<input id="task-text" type="text" placeholder="Title" size="30" />
-	  </div>
-	  <div id="list_actions_container">
-		<span title="Delete All Tasks" class="fa fa-ban action clear"></span>
 		<span title="Add Task" class="fa fa-plus-circle action add"></span>
-	  </div>
+		<input id="task-text" type="text" placeholder="Add a task" size="30" />
 	</div>
 </div>
-
-<div id="right_pane">
+<div id="container_tasks">
 	<div id="container_tasks_uncompleted">
-		<h3 class="header">Open Tasks</h3>
+	</div>
+	<div id="container_btn_show_completed">
+		<div id="btn_show_completed">
+			<button type="button" class="ui-button">
+				<span class="ui-button-text">Show completed tasks</span>
+			</button>
+		</div>
 	</div>
 	<div id="container_tasks_completed">
-		<h3 class="header">Completed Tasks</h3>
 	</div>
 </div>
 

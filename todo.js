@@ -2,7 +2,7 @@ var data = JSON.parse(localStorage.getItem("todoData"));
 data = data || {};
 
 // -------------------------------------------------
-// PARAMS: string title, string desc
+// PARAMS: string title
 // RETURNS: task object
 // -------------------------------------------------
 function createTask(text)
@@ -46,28 +46,33 @@ function addTaskToList(task)
 	class: "fa fa-check-circle-o action done",
 	title: "Done"});
 
+  var actions = $("<span>", {
+    class: "task-actions"
+  });
+
   // Create task div
   var taskDiv = $("<div>", {
     id: task.id,
 	style: "",
 	class: "task"});
 
-  taskDiv.append(delButton);
-  taskDiv.append(doneButton);
+  actions.append(delButton);
+  actions.append(doneButton);
+
+  taskDiv.append(actions);
 
   taskDiv.append(task.text);
 
   // If task is stored as completed
   if (task.status === 1)
   {
-    $("#container_tasks_completed").append(taskDiv);
+    $("#container_tasks_completed").prepend(taskDiv);
     $("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
 	taskDiv.addClass("completed");
-	$("#" + taskid + " .description, #" + taskid + " h4").hide();
 
   }
   else
-	$("#container_tasks_uncompleted").append(taskDiv);
+	$("#container_tasks_uncompleted").prepend(taskDiv);
 
   taskDiv.hide();
   taskDiv.fadeIn(500)
@@ -92,17 +97,6 @@ function btn_addNewTask(text)
 }
 
 // -------------------------------------------------
-// Clears list as well as localStorage
-// -------------------------------------------------
-function btn_deleteAllTasks()
-{
-    // Clear list and localStorage
-    localStorage.clear();
-    data = {};
-    clearAllTasks();
-}
-
-// -------------------------------------------------
 // PARAMS:
 //  message - the text to display in the prompt
 //  callback - function to call if user hits OK
@@ -119,6 +113,11 @@ function ui_confirmDialog(message, callback, args)
 	    height: "auto",
 	    width: 400,
 	    modal: true,
+	    position: {
+	        my: "center",
+	        at: "center",
+	        of: window
+	    },
 	    buttons: {
 	        OK: function () {
 	            $(this).dialog("close");
@@ -261,14 +260,10 @@ $( document ).ready(function() {
     // Initalize list from localStorage
     updateList();
 
-    // Keep add task form with you as you scroll
-    $(window).scroll(function() {
-      $("#add_task_container").animate({"marginTop": ($(window).scrollTop() + 5) + "px"}, 0);
-    });
 
     // Click handler for delete task button
-    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.delete", function() {
-        var taskid = $(this).parent()[0].id;
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.delete", function() {
+        var taskid = $(this).closest(".task").attr("id");
         var taskTitle = $("#"+ taskid).text();
 
         var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
@@ -278,20 +273,32 @@ $( document ).ready(function() {
     });
 
     // Click handler for finish task button
-    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .action.done", function() {
-        var taskid = $(this).parent()[0].id;
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
+        var taskid = $(this).closest(".task").attr('id');
+
+        console.log(taskid);
 
         btn_finishTask(taskid);
-    });
-
-    // Click handler for delete all tasks button
-    $(".action.clear").on("click", function() {
-        ui_confirmDialog("Are you sure you want to delete all tasks?", btn_deleteAllTasks, null);
     });
 
     // Click handler for add new task button
     $(".action.add").on("click", function() {
         btn_addNewTask($("#task-text").val());
+    });
+
+    // Click handler for show completed tasks button
+    $("#btn_show_completed > button").on("click", function() {
+        if ($("#container_tasks_completed").is(":visible"))
+        {
+            $(this).text("Show completed tasks");
+            $("#container_tasks_completed").fadeOut(500);
+        }
+        else
+        {
+            $(this).text("Hide completed tasks");
+            $("#container_tasks_completed").fadeIn(500);
+        }
+
     });
 
 }); // END DOCUMENT.READY
