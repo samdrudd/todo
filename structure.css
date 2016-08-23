@@ -1,0 +1,112 @@
+body
+{
+    padding: 0;
+    margin: 0;
+}
+
+/* NAVIGATION BAR */
+
+#navbar
+{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: auto;
+    padding: 0;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    z-index: 1;
+}
+
+#add_task_container
+{
+    width: 100%;
+    padding-top: 25px;
+}
+
+#input_task_text
+{
+    width: 80%;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+/* ACTION BUTTONS */
+
+.action
+{
+}
+
+.action.add
+{
+    margin: 40px;
+}
+
+.task-actions
+{
+    margin: 0;
+        margin-right: 15px;
+}
+
+.task-actions > .action
+{
+    padding: 10px;
+}
+
+/* TASK LIST */
+#container_tasks
+{
+    width: 100%;
+}
+
+/* TASKS */
+.task
+{
+    width: 100%;
+    height: auto;
+    padding: 0;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    margin: 0;
+}
+
+/* UI DIALOG */
+
+.no-close .ui-dialog-titlebar-close
+{
+}
+
+.ui-dialog-titlebar
+{
+}
+
+.ui-dialog
+{
+    padding-top: 25px;
+}
+
+.ui-dialog-buttonpane
+{
+}
+
+/* SHOW COMPLETED TASKS BUTTON */
+
+#container_btn_show_completed
+{
+    width: 100%;
+    margin: 0;
+        margin-top: 50px;
+        margin-bottom: 50px;
+}
+
+#btn_show_completed
+{
+    width: 90%;
+    margin: 0 auto;
+}
+
+#btn_show_completed > button
+{
+    width: 100%;
+    font-size: 36pt;
+}

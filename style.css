@@ -1,35 +1,107 @@
+body
+{
+    font-family: Helvetica, Arial, sans-serif;
+    color: #CCCCCC;
+}
+
+/* NAVIGATION BAR */
+
 #navbar
 {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: auto;
-    padding: 0;
-        padding-top: 15px;
-        padding-bottom: 15px;
-    border-bottom: 1px solid #DDD;
-    background-color: #FFF;
-    z-index: 1;
+    border: 0;
+        border-bottom: 1px solid #DDDDDD;
+    background-color: #F6F6F6;
 }
 
 #add_task_container
 {
-    width: 100%;
-    padding-top: 25px;
 }
 
-#task-text
+#input_task_text
 {
-    width: 85%;
     font-size: 48pt;
-    padding: 25px;
-    margin-bottom: 25px;
+    border: 1px solid #DDDDDD;
+    color: #DDDDDD;
+}
+
+/* ACTION BUTTONS */
+
+.action
+{
+    transition: all 0.2s linear;
+    font-size: 48pt;
+}
+
+.add
+{
+}
+
+.add, .done
+{
+    color: #99DD99;
+}
+
+.add:hover, .done:hover
+{
+    color: #66AA66;
+    cursor: pointer;
+}
+
+.delete
+{
+    color: #FF6666;
+}
+
+.delete:hover
+{
+    color: #AA0000;
+    cursor: pointer;
+}
+
+/* TASK LIST */
+#container_tasks
+{
+}
+
+#container_tasks_completed
+{
+    display: none;
+}
+
+/* TASKS */
+
+.task
+{
+    font-size: 48pt;
+}
+
+.completed
+{
+  background-color:#EEFAEE;
+  font-style:italic;
+  color:#66AA66;
+}
+
+/* UI DIALOG */
+
+.no-close .ui-dialog-titlebar-close
+{
+    display: none;
+}
+
+.ui-dialog-titlebar
+{
+    display: none;
+}
+
+.ui-dialog
+{
+    font-size: 32pt;
+}
+
+.ui-dialog-buttonpane
+{
     border: 0;
 }
 
-.action.add
-{
-    font-size: 48pt;
-    margin: 20px;
-    border: 1px solid red;
-}
+/* SHOW COMPLETED TASKS BUTTON */

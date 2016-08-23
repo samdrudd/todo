@@ -93,7 +93,7 @@ function btn_addNewTask(text)
     addTaskToList(task);
 
     // Clear form
-    $("#task-text").val('');
+    $("#input_task_text").val('');
 }
 
 // -------------------------------------------------
@@ -111,12 +111,12 @@ function ui_confirmDialog(message, callback, args)
 	    dialogClass: "no-close",
 	    resizable: false,
 	    height: "auto",
-	    width: 400,
+        width: "90%",
 	    modal: true,
 	    position: {
 	        my: "center",
 	        at: "center",
-	        of: window
+	        of: screen
 	    },
 	    buttons: {
 	        OK: function () {
@@ -283,7 +283,7 @@ $( document ).ready(function() {
 
     // Click handler for add new task button
     $(".action.add").on("click", function() {
-        btn_addNewTask($("#task-text").val());
+        btn_addNewTask($("#input_task_text").val());
     });
 
     // Click handler for show completed tasks button
