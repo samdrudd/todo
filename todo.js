@@ -1,11 +1,23 @@
 class Task
 {
-    constructor(id, text, status, created)
+    constructor(obj)
     {
-        this._id = id;
-        this._text = text;
-        this._status = status;
-        this._created = created;
+        if (typeof obj === 'string')
+        {
+            var today = new Date();
+
+            this._id = today.getTime();
+            this._text = obj;
+            this._status = 0;
+            this._created = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
+        }
+        else
+        {
+            this._id = obj.id;
+            this._text = obj.text;
+            this._status = obj.status;
+            this._created = obj.created;
+        }
     }
 
     get id()
@@ -27,11 +39,6 @@ class Task
         return this._created;
     }
 
-    set id(id)
-    {
-        this._id = id;
-    }
-
     set text(text)
     {
         this._text = text;
@@ -40,11 +47,6 @@ class Task
     set status(status)
     {
         this._status = status;
-    }
-
-    set created(created)
-    {
-        this._created = created;
     }
 
     toJSON()
@@ -88,8 +90,7 @@ class Data
     getTask(taskid)
     {
         var task = this._data[taskid];
-
-        return new Task(task.id, task.text, task.status, task.created);
+        return new Task(task);
     }
 
     getAllTasks()
@@ -107,75 +108,44 @@ class Data
 
 class TaskController
 {
-    static AddTask(text)
+    static addTask(text)
     {
-        // Generate ID and created date
-        var today = new Date();
-        var id = today.getTime();
-        var todaysDate = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
-
-        var task = new Task(id, text, 0, todaysDate);
-
-        // Add task to 'database'
+        var task = new Task(text);
         data.createTask(task);
         UIController.addTaskToList(task);
     }
 
-    static FinishTask(taskid)
+    static finishTask(taskid)
     {
         var task = $("#" + taskid);
         var taskObj = data.getTask(taskid);
 
-        // If the task is not already marked completed...
         if (!task.hasClass("completed"))
         {
-            task.addClass("completed");
-            // Change the checkmark circle icon from open to filled to further indicate task completion
-            $("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
-
-            // Fade out the task and fade it back in under the 'completed tasks' section
-            task.fadeOut(function() {
-                task.remove().appendTo("#container_tasks_completed").fadeIn();
-            });
-
             taskObj.status = 1;
         }
-        // If the task is already marked as completed
         else
         {
-            // Remove 'completed' class and change checkmark circle icon from filled to open
-            task.removeClass("completed");
-            $("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
-
-            task.fadeOut(function() {
-                task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
-            });
-
-            // Store completion status in localStorage data
             taskObj.status = 0;
         }
 
+        UIController.finishTask(task);
         data.updateTask(taskObj);
     }
 
-    static DeleteTask(taskid)
+    static deleteTask(taskid)
     {
         var task = $("#" + taskid);
-
         task.addClass("deleting");
-
         data.deleteTask(taskid);
-
         task.fadeOut(500);
     }
 }
 
 class UIController
 {
-
     static addTaskToList(task)
     {
-        // Create and add task to view
         var delButton = $("<span>", {
         class: "fa fa-ban action delete",
         title: "Delete"});
@@ -199,7 +169,6 @@ class UIController
         taskDiv.append(actions);
         taskDiv.append(task.text);
 
-        // If task is stored as completed
         if (task.status === 1)
         {
             $("#container_tasks_completed").prepend(taskDiv);
@@ -211,6 +180,27 @@ class UIController
         taskDiv.hide();
         taskDiv.fadeIn(500)
         $("#input_task_text").val('');
+    }
+
+    static finishTask(task)
+    {
+        console.log(task);
+        if (!task.hasClass("completed"))
+        {
+            task.addClass("completed");
+            $("#" + task.attr("id") + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+            task.fadeOut(function() {
+                task.remove().appendTo("#container_tasks_completed").fadeIn();
+            });
+        }
+        else
+        {
+            task.removeClass("completed");
+            $("#" + task.attr("id") + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
+            task.fadeOut(function() {
+                task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
+            });
+        }
     }
 
     static confirmDialog(message, callback, args)
@@ -248,53 +238,50 @@ class UIController
         }
     }
 
+    static showCompletedTasks()
+    {
+        if ($("#container_tasks_completed").is(":visible"))
+        {
+            $("#btn_show_completed > .ui-button").text("Show completed tasks");
+            $("#container_tasks_completed").fadeOut(500);
+        }
+        else
+        {
+            $("#btn_show_completed > .ui-button").text("Hide completed tasks");
+            $("#container_tasks_completed").fadeIn(500);
+        }
+    }
+
 }
 
 var data = new Data();
-var uic = new UIController();
 
-// DOCUMENT.READY
 $( document ).ready(function() {
 
     UIController.updateList();
 
-    // Click handler for delete task button
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.delete", function() {
         var taskid = $(this).closest(".task").attr("id");
         var taskTitle = $("#"+ taskid).text();
         var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
 
-        UIController.confirmDialog(message, TaskController.DeleteTask, taskid);
-
+        UIController.confirmDialog(message, TaskController.deleteTask, taskid);
     });
 
-    // Click handler for finish task button
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
         var taskid = $(this).closest(".task").attr("id");
 
-        TaskController.FinishTask(taskid);
+        TaskController.finishTask(taskid);
     });
 
-    // Click handler for add new task button
     $(".action.add").on("click", function() {
         var text = $("#input_task_text").val();
-
-        if (text !== "") TaskController.AddTask(text);
+        if (text !== "") TaskController.addTask(text);
     });
 
-    // Click handler for show completed tasks button
     $("#btn_show_completed > button").on("click", function() {
-        if ($("#container_tasks_completed").is(":visible"))
-        {
-            $(this).text("Show completed tasks");
-            $("#container_tasks_completed").fadeOut(500);
-        }
-        else
-        {
-            $(this).text("Hide completed tasks");
-            $("#container_tasks_completed").fadeIn(500);
-        }
+        UIController.showCompletedTasks();
     });
 
-}); // END DOCUMENT.READY
+});
 
