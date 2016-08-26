@@ -11,7 +11,7 @@ body
     position: fixed;
     top: 0;
     width: 100%;
-    height: auto;
+    height: 200px;
     padding: 0;
         padding-top: 15px;
         padding-bottom: 15px;
@@ -57,6 +57,7 @@ body
 #container_tasks
 {
     width: 100%;
+    margin-top: 250px;
 }
 
 /* TASKS */

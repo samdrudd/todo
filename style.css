@@ -73,6 +73,7 @@ body
 .task
 {
     font-size: 48pt;
+    border-bottom: 1px solid #F6F6F6;
 }
 
 .completed
