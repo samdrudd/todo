@@ -146,23 +146,10 @@ class UIController
 {
     static addTaskToList(task)
     {
-        var delButton = $("<span>", {
-        class: "fa fa-ban action delete",
-        title: "Delete"});
-
-        var doneButton = $("<span>", {
-        id: task.id + "-done",
-        class: "fa fa-check-circle-o action done",
-        title: "Done"});
-
-        var actions = $("<span>", {
-        class: "task-actions"
-        });
-
-        var taskDiv = $("<div>", {
-        id: task.id,
-        style: "",
-        class: "task"});
+        var delButton = $('<span class="fa fa-ban action delete" title="Delete"></span>');
+        var doneButton = $('<span id="' + task.id + '-done" class="fa fa-check-circle-o action done" title="Done"></span>');
+        var actions = $('<span class="task-actions"></span>');
+        var taskDiv = $('<div id="' + task.id + '" style="" class="task"></div>');
 
         actions.append(delButton);
         actions.append(doneButton);
@@ -184,7 +171,6 @@ class UIController
 
     static finishTask(task)
     {
-        console.log(task);
         if (!task.hasClass("completed"))
         {
             task.addClass("completed");
@@ -251,7 +237,6 @@ class UIController
             $("#container_tasks_completed").fadeIn(500);
         }
     }
-
 }
 
 var data = new Data();
@@ -264,13 +249,11 @@ $( document ).ready(function() {
         var taskid = $(this).closest(".task").attr("id");
         var taskTitle = $("#"+ taskid).text();
         var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
-
         UIController.confirmDialog(message, TaskController.deleteTask, taskid);
     });
 
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
         var taskid = $(this).closest(".task").attr("id");
-
         TaskController.finishTask(taskid);
     });
 
