@@ -1,55 +1,66 @@
 body
 {
-  font-family: Helvetica,Arial,sans-serif;
-  padding: 0;
-  margin: 0;
-  position: relative;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #CCCCCC;
 }
+
+/* NAVIGATION BAR */
 
 #navbar
 {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 50px;
-    padding: 0;
-        padding-top: 15px;
-        padding-bottom: 15px;
-    margin: 0;
-        margin-bottom: 10px;
-    display: block;
-    clear: both;
-    border-bottom: 1px solid #DDD;
-    background-color: #FFF;
-    z-index: 1;
-}
-
-#task-text:focus
-{
-  outline: none;
-  color: #666;
-}
-
-#task-text
-{
-  width: 90%;
-  padding: 10px;
-  color: #DDD;
-  border: 1px solid #EEE;
-  font-size: 16pt;
+    border: 0;
+        border-bottom: 1px solid #DDDDDD;
+    background-color: #F6F6F6;
 }
 
 #add_task_container
 {
-    width: 33%;
-    margin: 0 auto;
 }
 
+#input_task_text
+{
+    font-size: 48pt;
+    border: 1px solid #DDDDDD;
+    color: #DDDDDD;
+}
+
+/* ACTION BUTTONS */
+
+.action
+{
+    transition: all 0.2s linear;
+    font-size: 48pt;
+}
+
+.add
+{
+}
+
+.add, .done
+{
+    color: #99DD99;
+}
+
+.add:hover, .done:hover
+{
+    color: #66AA66;
+    cursor: pointer;
+}
+
+.delete
+{
+    color: #FF6666;
+}
+
+.delete:hover
+{
+    color: #AA0000;
+    cursor: pointer;
+}
+
+/* TASK LIST */
 #container_tasks
 {
-    width: 65%;
-    margin: 0 auto;
-        margin-top: 80px;
 }
 
 #container_tasks_completed
@@ -57,48 +68,12 @@ body
     display: none;
 }
 
-.action
-{
-  transition: all 0.2s linear;
-  font-size: 32pt;
-  vertical-align: middle;
-}
-
-.delete, .clear
-{
-  color:#FF6666;
-}
-
-.delete:hover, .clear:hover
-{
-  color:#AA0000;
-  cursor:pointer;
-}
-
-.done, .add
-{
-  color:#99DD99;
-  padding:5px;
-}
-
-.done:hover, .add:hover
-{
-  color:#66AA66;
-  cursor:pointer;
-}
+/* TASKS */
 
 .task
 {
-    margin: 0;
-    padding: 20px;
-    font-size: 24pt;
-    border-bottom: 1px solid #EEE;
-    color: #999;
-}
-
-.task-actions
-{
-  padding-right: 15px;
+    font-size: 48pt;
+    border-bottom: 1px solid #F6F6F6;
 }
 
 .completed
@@ -106,12 +81,6 @@ body
   background-color:#EEFAEE;
   font-style:italic;
   color:#66AA66;
-}
-
-.deleting
-{
-  color:#330000;
-  background-color:#CCAAAA;
 }
 
 /* UI DIALOG */
@@ -128,7 +97,7 @@ body
 
 .ui-dialog
 {
-    padding-top: 25px;
+    font-size: 32pt;
 }
 
 .ui-dialog-buttonpane
@@ -137,22 +106,3 @@ body
 }
 
 /* SHOW COMPLETED TASKS BUTTON */
-
-#container_btn_show_completed
-{
-    width: 100%;
-    margin: 20px;
-    padding-top: 50px;
-}
-
-#btn_show_completed
-{
-    width: 33%;
-    margin: 0 auto;
-}
-
-#btn_show_completed > button
-{
-    width: 100%;
-    z-index: 0;
-}

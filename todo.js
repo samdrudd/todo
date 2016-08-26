@@ -1,305 +1,287 @@
-var data = JSON.parse(localStorage.getItem("todoData"));
-data = data || {};
-
-// -------------------------------------------------
-// PARAMS: string title
-// RETURNS: task object
-// -------------------------------------------------
-function createTask(text)
+class Task
 {
-  // Generate ID and return JSON object
-  today = new Date();
+    constructor(obj)
+    {
+        if (typeof obj === 'string')
+        {
+            var today = new Date();
 
-  id = today.getTime();
+            this._id = today.getTime();
+            this._text = obj;
+            this._status = 0;
+            this._created = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
+        }
+        else
+        {
+            this._id = obj.id;
+            this._text = obj.text;
+            this._status = obj.status;
+            this._created = obj.created;
+        }
+    }
 
-  todaysDate = (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear();
+    get id()
+    {
+        return this._id;
+    }
+    get text()
+    {
+        return this._text;
+    }
 
-  return {id: id, text: text, status: 0, created: todaysDate}
-}
+    get status()
+    {
+        return this._status;
+    }
 
-// -------------------------------------------------
-// PARAMS: task - task object returned from createTask
-// Adds given task to data array and localStorage
-// -------------------------------------------------
-function addTaskToData(task)
-{
-  // Add task to localStorage
-  data[task.id] = task;
+    get created()
+    {
+        return this._created;
+    }
 
-  pushDataToLocalStorage();
-}
+    set text(text)
+    {
+        this._text = text;
+    }
 
-// -------------------------------------------------
-// PARAMS: task - task object to add to list
-// Creates and displays HTML associated with task object
-// -------------------------------------------------
-function addTaskToList(task)
-{
-  // Create the delete button
-  var delButton = $("<span>", {
-	class: "fa fa-ban action delete",
-	title: "Delete"});
+    set status(status)
+    {
+        this._status = status;
+    }
 
-  // Create done button
-  var doneButton = $("<span>", {
-    id: task.id + "-done",
-	class: "fa fa-check-circle-o action done",
-	title: "Done"});
-
-  var actions = $("<span>", {
-    class: "task-actions"
-  });
-
-  // Create task div
-  var taskDiv = $("<div>", {
-    id: task.id,
-	style: "",
-	class: "task"});
-
-  actions.append(delButton);
-  actions.append(doneButton);
-
-  taskDiv.append(actions);
-
-  taskDiv.append(task.text);
-
-  // If task is stored as completed
-  if (task.status === 1)
-  {
-    $("#container_tasks_completed").prepend(taskDiv);
-    $("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
-	taskDiv.addClass("completed");
-
-  }
-  else
-	$("#container_tasks_uncompleted").prepend(taskDiv);
-
-  taskDiv.hide();
-  taskDiv.fadeIn(500)
-}
-
-// -------------------------------------------------
-// PARAMS: string title, string desc
-// RETURNS: task object
-// -------------------------------------------------
-function btn_addNewTask(text)
-{
-    // Don't add a task w/ no text
-    if (text === "") return;
-
-    // Create task, add to data + html
-    task = createTask(text);
-    addTaskToData(task);
-    addTaskToList(task);
-
-    // Clear form
-    $("#task-text").val('');
-}
-
-// -------------------------------------------------
-// PARAMS:
-//  message - the text to display in the prompt
-//  callback - function to call if user hits OK
-//  args - arguments to pass to callback function
-// Create a jQuery UI dialog-based prompt
-// -------------------------------------------------
-function ui_confirmDialog(message, callback, args)
-{
-    var dialog = $("<div>" + message + "</div>");
-
-	dialog.dialog({
-	    dialogClass: "no-close",
-	    resizable: false,
-	    height: "auto",
-	    width: 400,
-	    modal: true,
-	    position: {
-	        my: "center",
-	        at: "center",
-	        of: window
-	    },
-	    buttons: {
-	        OK: function () {
-	            $(this).dialog("close");
-	            callback(args);
-	        },
-	        Cancel: function () {
-	            $(this).dialog("close");
-	        }
-	    }
-	});
+    toJSON()
+    {
+        return {id: this._id, text: this._text, status: this._status, created: this._created};
+    }
 
 }
 
-// -------------------------------------------------
-// PARAMS: taskid - id of task to delete
-// Removes task with associated id from data
-// Pushes updated data to localStorage
-// -------------------------------------------------
-function btn_deleteTask(taskid)
+class Data
 {
-	var taskObj = $("#" + taskid);
+    constructor()
+    {
+        this._data = JSON.parse(localStorage.getItem("todoData"));
+        this._data = this._data || {};
+    }
 
-	taskObj.addClass("deleting");
+    _pushDataToLocalStorage()
+    {
+        localStorage.setItem("todoData", JSON.stringify(this._data));
+    }
 
-    // Remove the task from the data array
-    delete data[taskid];
+    createTask(task)
+    {
+        this._data[task.id] = task.toJSON();
+        this._pushDataToLocalStorage();
+    }
 
-    // Push data to localStorage
-    pushDataToLocalStorage();
+    deleteTask(taskid)
+    {
+        delete this._data[taskid];
+        this._pushDataToLocalStorage();
+    }
 
-    // Remove corresponding div from list
-   taskObj.fadeOut(500);
+    updateTask(task)
+    {
+        this._data[task.id] = task.toJSON();
+        this._pushDataToLocalStorage();
+    }
+
+    getTask(taskid)
+    {
+        var task = this._data[taskid];
+        return new Task(task);
+    }
+
+    getAllTasks()
+    {
+        var arr = {};
+
+        for (var id in this._data)
+        {
+            arr[id] = this.getTask(id);
+        }
+
+        return arr;
+    }
 }
 
-// -------------------------------------------------
-// PARAMS: id of task to mark done
-// Collapses task's div and highlights it green to
-// indicate the task has been completed
-// -------------------------------------------------
-function btn_finishTask(taskid)
+class TaskController
 {
-  var task = $("#" + taskid);
+    static addTask(text)
+    {
+        var task = new Task(text);
+        data.createTask(task);
+        UIController.addTaskToList(task);
+    }
 
-  // If the task is not already marked completed...
-  if (!task.hasClass("completed"))
-  {
-	task.addClass("completed");
-	// Change the checkmark circle icon from open to filled to further indicate task completion
-	$("#" + taskid + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+    static finishTask(taskid)
+    {
+        var task = $("#" + taskid);
+        var taskObj = data.getTask(taskid);
 
-	// Fade out the task and fade it back in under the 'completed tasks' section
-	task.fadeOut(function() {
-		task.remove().appendTo("#container_tasks_completed").fadeIn();
-	});
+        if (!task.hasClass("completed"))
+        {
+            taskObj.status = 1;
+        }
+        else
+        {
+            taskObj.status = 0;
+        }
 
-	// Store completion status in localStorage data
-	data[taskid].status = 1;
-  }
-  // If the task is already marked as completed
-  else
-  {
-	// Remove 'completed' class and change checkmark circle icon from filled to open
-	task.removeClass("completed");
-	$("#" + taskid + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
+        UIController.finishTask(task);
+        data.updateTask(taskObj);
+    }
 
-	task.fadeOut(function() {
-		task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
-	});
-
-	// Store completion status in localStorage data
-	data[taskid].status = 0;
-  }
-
-  // Push data to localStorage
-  pushDataToLocalStorage();
+    static deleteTask(taskid)
+    {
+        var task = $("#" + taskid);
+        task.addClass("deleting");
+        data.deleteTask(taskid);
+        task.fadeOut(500);
+    }
 }
 
-// -------------------------------------------------
-// PARAMS:
-//   completed - boolean, if true clear completed tasks
-//   uncompleted - boolean, if true clear uncompleted tasks
-// Clears out HTML list of tasks (DOES NOT UPDATE localStorage)
-// -------------------------------------------------
-function clearList(completed, uncompleted)
+class UIController
 {
-	if (completed)
-	{
-		$("#container_tasks_completed").find('*').not('.header').remove();
-	}
+    static addTaskToList(task)
+    {
+        var delButton = $("<span>", {
+        class: "fa fa-ban action delete",
+        title: "Delete"});
 
-	if (uncompleted)
-	{
-		$("#container_tasks_uncompleted").find('*').not('.header').remove();
-	}
-}
+        var doneButton = $("<span>", {
+        id: task.id + "-done",
+        class: "fa fa-check-circle-o action done",
+        title: "Done"});
 
-// Clears only completed tasks
-function clearCompletedTasks()
-{
-    clearList(true, false);
-}
+        var actions = $("<span>", {
+        class: "task-actions"
+        });
 
-// Clears only uncompleted tasks
-function clearUncompletedTasks()
-{
-    clearList(false, true);
-}
+        var taskDiv = $("<div>", {
+        id: task.id,
+        style: "",
+        class: "task"});
 
-// Clears all tasks
-function clearAllTasks()
-{
-    clearList(true, true);
-}
+        actions.append(delButton);
+        actions.append(doneButton);
+        taskDiv.append(actions);
+        taskDiv.append(task.text);
 
-// -------------------------------------------------
-// Clears HTML list and updates it with data currently
-// in localStorage
-// -------------------------------------------------
-function updateList()
-{
-  // Clear list
-  clearAllTasks();
+        if (task.status === 1)
+        {
+            $("#container_tasks_completed").prepend(taskDiv);
+            $("#" + task.id + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+            taskDiv.addClass("completed");
+        }
+        else $("#container_tasks_uncompleted").prepend(taskDiv);
 
-  // Repopulate with tasks from data
-  for (taskid in data)
-  {
-    addTaskToList(data[taskid]);
-  }
-}
+        taskDiv.hide();
+        taskDiv.fadeIn(500)
+        $("#input_task_text").val('');
+    }
 
-function pushDataToLocalStorage()
-{
-    localStorage.setItem("todoData", JSON.stringify(data));
-}
+    static finishTask(task)
+    {
+        console.log(task);
+        if (!task.hasClass("completed"))
+        {
+            task.addClass("completed");
+            $("#" + task.attr("id") + "-done").removeClass("fa-check-circle-o").addClass("fa-check-circle");
+            task.fadeOut(function() {
+                task.remove().appendTo("#container_tasks_completed").fadeIn();
+            });
+        }
+        else
+        {
+            task.removeClass("completed");
+            $("#" + task.attr("id") + "-done").removeClass("fa-check-circle").addClass("fa-check-circle-o");
+            task.fadeOut(function() {
+                task.remove().appendTo("#container_tasks_uncompleted").fadeIn();
+            });
+        }
+    }
 
-// DOCUMENT.READY
-$( document ).ready(function() {
-    var data = {};
+    static confirmDialog(message, callback, args)
+    {
+        var dialog = $("<div>" + message + "</div>");
 
-    // Initalize list from localStorage
-    updateList();
+        dialog.dialog({
+            dialogClass: "no-close",
+            resizable: false,
+            height: "auto",
+            width: "90%",
+            modal: true,
+            buttons: {
+                OK: function () {
+                    $(this).dialog("close");
+                    callback(args);
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
 
+    }
 
-    // Click handler for delete task button
-    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.delete", function() {
-        var taskid = $(this).closest(".task").attr("id");
-        var taskTitle = $("#"+ taskid).text();
+    static updateList()
+    {
+        var tasks = data.getAllTasks();
 
-        var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
+        if (tasks === undefined) return;
 
-        ui_confirmDialog(message, btn_deleteTask, taskid);
+        for (var id in tasks)
+        {
+            this.addTaskToList(tasks[id]);
+        }
+    }
 
-    });
-
-    // Click handler for finish task button
-    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
-        var taskid = $(this).closest(".task").attr('id');
-
-        console.log(taskid);
-
-        btn_finishTask(taskid);
-    });
-
-    // Click handler for add new task button
-    $(".action.add").on("click", function() {
-        btn_addNewTask($("#task-text").val());
-    });
-
-    // Click handler for show completed tasks button
-    $("#btn_show_completed > button").on("click", function() {
+    static showCompletedTasks()
+    {
         if ($("#container_tasks_completed").is(":visible"))
         {
-            $(this).text("Show completed tasks");
+            $("#btn_show_completed > .ui-button").text("Show completed tasks");
             $("#container_tasks_completed").fadeOut(500);
         }
         else
         {
-            $(this).text("Hide completed tasks");
+            $("#btn_show_completed > .ui-button").text("Hide completed tasks");
             $("#container_tasks_completed").fadeIn(500);
         }
+    }
 
+}
+
+var data = new Data();
+
+$( document ).ready(function() {
+
+    UIController.updateList();
+
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.delete", function() {
+        var taskid = $(this).closest(".task").attr("id");
+        var taskTitle = $("#"+ taskid).text();
+        var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
+
+        UIController.confirmDialog(message, TaskController.deleteTask, taskid);
     });
 
-}); // END DOCUMENT.READY
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
+        var taskid = $(this).closest(".task").attr("id");
+
+        TaskController.finishTask(taskid);
+    });
+
+    $(".action.add").on("click", function() {
+        var text = $("#input_task_text").val();
+        if (text !== "") TaskController.addTask(text);
+    });
+
+    $("#btn_show_completed > button").on("click", function() {
+        UIController.showCompletedTasks();
+    });
+
+});
 
