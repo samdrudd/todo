@@ -140,6 +140,14 @@ class TaskController
         data.deleteTask(taskid);
         task.fadeOut(500);
     }
+
+    static editTask(taskid, newtext)
+    {
+        var taskobj = data.getTask(taskid);
+        taskobj.text = newtext;
+        data.updateTask(taskobj);
+        UIController.updateTask(taskobj);
+    }
 }
 
 class UIController
@@ -150,11 +158,12 @@ class UIController
         var doneButton = $('<span id="' + task.id + '-done" class="fa fa-check-circle-o action done" title="Done"></span>');
         var actions = $('<span class="task-actions"></span>');
         var taskDiv = $('<div id="' + task.id + '" style="" class="task"></div>');
+        var textSpan = $('<span class="task-text">' + task.text + '</span>');
 
         actions.append(delButton);
         actions.append(doneButton);
         taskDiv.append(actions);
-        taskDiv.append(task.text);
+        taskDiv.append(textSpan);
 
         if (task.status === 1)
         {
@@ -165,7 +174,7 @@ class UIController
         else $("#container_tasks_uncompleted").prepend(taskDiv);
 
         taskDiv.hide();
-        taskDiv.fadeIn(500)
+        taskDiv.fadeIn(500);
         $("#input_task_text").val('');
     }
 
@@ -189,6 +198,12 @@ class UIController
         }
     }
 
+    static updateTask(task)
+    {
+        $("#" + task.id + " > .task-text").text(task.text);
+    }
+
+    // @TODO: Should implement a dialog that simply returns true on OK and false on Cancel (F this callback system)
     static confirmDialog(message, callback, args)
     {
         var dialog = $("<div>" + message + "</div>");
@@ -249,22 +264,35 @@ $( document ).ready(function() {
         var taskid = $(this).closest(".task").attr("id");
         var taskTitle = $("#"+ taskid).text();
         var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
+
         UIController.confirmDialog(message, TaskController.deleteTask, taskid);
     });
 
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
         var taskid = $(this).closest(".task").attr("id");
+
         TaskController.finishTask(taskid);
+    });
+
+    $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-text", function() {
+        var taskid = $(this).closest(".task").attr("id");
+        var currentText = $(this).text();
+        var newtext = prompt("Edit task text:", currentText);
+
+        if (newtext !== null && newtext !== currentText) TaskController.editTask(taskid, newtext);
     });
 
     $(".action.add").on("click", function() {
         var text = $("#input_task_text").val();
+
         if (text !== "") TaskController.addTask(text);
     });
 
     $("#btn_show_completed > button").on("click", function() {
         UIController.showCompletedTasks();
     });
+
+
 
 });
 
