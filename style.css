@@ -83,6 +83,11 @@ body
   color:#66AA66;
 }
 
+.deleting
+{
+    background-color: #FFBBBB;
+}
+
 /* UI DIALOG */
 
 .no-close .ui-dialog-titlebar-close

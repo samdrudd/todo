@@ -133,12 +133,26 @@ class TaskController
         data.updateTask(taskObj);
     }
 
+    static _deleteCallback(task)
+    {
+        data.deleteTask(task.attr("id"));
+        task.fadeOut(500);
+    }
+
+    static _deleteCancelCallback(task)
+    {
+        task.removeClass("deleting");
+
+    }
+
     static deleteTask(taskid)
     {
         var task = $("#" + taskid);
+        var message = "Are you sure you want to delete this task?<br><br><b><i>" + task.text() + "</i></b>";
+
         task.addClass("deleting");
-        data.deleteTask(taskid);
-        task.fadeOut(500);
+
+        UIController.confirmDialog(message, TaskController._deleteCallback, task, TaskController._deleteCancelCallback, task);
     }
 }
 
@@ -189,9 +203,9 @@ class UIController
         }
     }
 
-    static confirmDialog(message, callback, args)
+    static confirmDialog(message, callback, args, ccallback, cargs)
     {
-        var dialog = $("<div>" + message + "</div>");
+        var dialog = $("<div title='Are you sure?'>" + message + "</div>");
 
         dialog.dialog({
             dialogClass: "no-close",
@@ -202,10 +216,11 @@ class UIController
             buttons: {
                 OK: function () {
                     $(this).dialog("close");
-                    callback(args);
+                    if (callback) callback(args);
                 },
                 Cancel: function () {
                     $(this).dialog("close");
+                    if (ccallback) ccallback(cargs);
                 }
             }
         });
@@ -246,10 +261,7 @@ $( document ).ready(function() {
     UIController.updateList();
 
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.delete", function() {
-        var taskid = $(this).closest(".task").attr("id");
-        var taskTitle = $("#"+ taskid).text();
-        var message = "Are you sure you want to delete this task?<br><br><b><i>" + taskTitle + "</i></b>";
-        UIController.confirmDialog(message, TaskController.deleteTask, taskid);
+        TaskController.deleteTask($(this).closest(".task").attr("id"));
     });
 
     $("#container_tasks_uncompleted, #container_tasks_completed").on("click", ".task > .task-actions > .action.done", function() {
