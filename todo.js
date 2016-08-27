@@ -165,7 +165,7 @@ class UIController
         else $("#container_tasks_uncompleted").prepend(taskDiv);
 
         taskDiv.hide();
-        taskDiv.fadeIn(500)
+        taskDiv.fadeIn(500);
         $("#input_task_text").val('');
     }
 
